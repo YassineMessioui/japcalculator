@@ -2,31 +2,40 @@ version: 2.1
 jobs:
   build-test:
     docker:
-      # specify the version you desire here
       - image: circleci/node:14
-
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
       - run: npm install
-
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-
-      # run tests!
       - run: npm run test
       - run: npm run build
+
+  pr-title:
+    docker:
+      - image: cimg/node:20.18.1
+    environment:
+      GITHUB_REPOSITORY: << pipeline.git.repo_owner >>/<< pipeline.git.repo_name >>
+    steps:
+      - checkout
+      - run: node .circleci/validate-pr-title.mjs
+
+  npm-audit:
+    docker:
+      - image: cimg/node:20.18.1
+    steps:
+      - checkout
+      - run: npm audit || true
 
 workflows:
   node-tests:
     jobs:
       - build-test
+      - pr-title
+      - npm-audit
