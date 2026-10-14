@@ -27,6 +27,7 @@ type ClassNames =
   | "mainFoodItems"
   | "itemContainer"
   | "buttonContainer"
+  | "resetButton"
   | "lateralBar"
   | "barSpacer";
 interface OwnProps {
@@ -78,6 +79,13 @@ export const CalculatorPage: React.FC<Props> = (props: Props) => {
             </div>
           </div>
           <div className={classes.buttonContainer}>
+            <Button
+              className={classes.resetButton}
+              onClick={() => setValues({})}
+              disabled={result === 0}
+            >
+              Reset selections
+            </Button>
             <Button variant="contained" onClick={sendData(result)}>
               {result} Kcal
             </Button>
@@ -184,6 +192,9 @@ const styles = (theme: CustomTheme): Record<ClassNames, CSSProperties> => ({
     flex: 1,
     marginBottom: theme.spacing(3),
     marginTop: theme.spacing(3),
+  },
+  resetButton: {
+    marginRight: theme.spacing(2),
   },
   lateralBar: {
     display: "flex",
