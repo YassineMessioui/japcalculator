@@ -1,10 +1,10 @@
-const { CIRCLE_SHA1, CIRCLE_PROJECT_USERNAME, CIRCLE_PROJECT_REPONAME, CIRCLE_PULL_REQUEST, CIRCLE_BRANCH } = process.env;
+const { CIRCLE_SHA1, GITHUB_REPOSITORY, CIRCLE_PULL_REQUEST, CIRCLE_BRANCH } = process.env;
 
-if (!CIRCLE_SHA1 || !CIRCLE_PROJECT_USERNAME || !CIRCLE_PROJECT_REPONAME) {
+if (!CIRCLE_SHA1 || !GITHUB_REPOSITORY) {
   throw new Error('Missing CircleCI commit or repository environment variables');
 }
 
-const repository = `${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}`;
+const repository = GITHUB_REPOSITORY;
 const acceptedTitle = /^(build|chore|ci|docs|feat|fix|hotfix|perf|refactor|revert|style|test)(\([a-z0-9._/-]+\))?:\s+\S.*$/;
 
 async function github(path) {

@@ -20,6 +20,8 @@ jobs:
   pr-title:
     docker:
       - image: cimg/node:20.18.1
+    environment:
+      GITHUB_REPOSITORY: << pipeline.git.repo_owner >>/<< pipeline.git.repo_name >>
     steps:
       - checkout
       - run: node .circleci/validate-pr-title.mjs
