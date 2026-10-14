@@ -1,0 +1,24 @@
+name: PR title
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-title:
+    name: PR title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        shell: bash
+        run: |
+          pattern='^(build|chore|ci|docs|feat|fix|hotfix|perf|refactor|revert|style|test)(\([a-z0-9._/-]+\))?:[[:space:]]+[^[:space:]].*$'
+          if [[ ! "$PR_TITLE" =~ $pattern ]]; then
+            echo "::error::PR title must begin with build, chore, ci, docs, feat, fix, hotfix, perf, refactor, revert, style, or test, optionally followed by a scope, then ': ' and a description."
+            exit 1
+          fi
